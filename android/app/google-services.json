@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "539570270273",
+    "project_id": "fix-city",
+    "storage_bucket": "fix-city.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539570270273:android:9e7e3690a4b18e835f16c0",
+        "android_client_info": {
+          "package_name": "br.com.barbatech.fix_city"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "539570270273-n06nf9b2ub5ud0c2el6852t427j567mf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPzPLeOiTLq0th7rK6LKzZVwd2BNi_bnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "539570270273-n06nf9b2ub5ud0c2el6852t427j567mf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
