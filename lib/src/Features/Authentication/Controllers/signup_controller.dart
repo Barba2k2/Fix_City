@@ -101,7 +101,8 @@ class SignUpController extends GetxController {
           await _db.collection("Users").where("E-mail", isEqualTo: email).get();
       // Retorna verdadeiro se um registro existente foi encontrado, caso contrário, falso.
       return snapshot.docs.isEmpty ? false : true;
-    } catch (e) {
+    } catch (e, s) {
+      log('Error on find register', error: e, stackTrace: s);
       throw "Erro ao buscar registro.";
     }
   }

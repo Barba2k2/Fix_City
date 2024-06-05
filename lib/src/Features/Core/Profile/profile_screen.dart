@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -67,6 +69,7 @@ class ProfileScreen extends StatelessWidget {
       () {
         final isDark = themeController.isDarkMode.value;
 
+        
         return WillPopScope(
           onWillPop: () async {
             bool shouldExit = await showExitDialog(context);

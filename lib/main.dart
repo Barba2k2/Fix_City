@@ -23,10 +23,11 @@ void main() async {
     ),
   );
 
-  //createdUserAdmin();
-
   // Carrega variáveis de ambiente usando FlutterConfig
   await FlutterConfig.loadEnvVariables();
+
+  // Cria o usuário administrador, se não existir
+  await createUserAdmin();
 
   // Configura um manipulador global de erros para registrar exceções no Flutter
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -38,7 +39,7 @@ void main() async {
   runApp(MyApp());
 }
 
-void createdUserAdmin() async {
+Future<void> createUserAdmin() async {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -48,31 +49,38 @@ void createdUserAdmin() async {
   // Instância do repositório de autenticação.
   final auth = AuthenticationRepository();
 
-  // Registra o usuário no Firebase usando e-mail e senha.
   try {
-    await auth.registerWithEmailAndPassword(
-      emailAdmin,
-      senhaAdmin,
-    );
-    await firestore.collection('Users').doc(firebaseAuth.currentUser!.uid).set(
-      {
-        "id": firebaseAuth.currentUser!.uid,
-        "E-mail": 'admin@admin.com',
-        "Nome Completo": 'admin',
-        "Numero de Telefone": '',
-        "CPF": '',
-        "Admin": true,
-      },
-    ).catchError(
-      (e) => log('Erro ao criar coleção: $e'),
-    );
-    await firebaseAuth.signOut();
+    // Verifica se o usuário administrador já existe
+    final userSnapshot = await firestore
+        .collection('Users')
+        .where('E-mail', isEqualTo: emailAdmin)
+        .get();
 
-    log("== User admin not exist, created");
-  } catch (e) {
-    if (e == 'O e-mail informado já possui um cadastro.') {
-      log("== User admin existe");
-      await firebaseAuth.signOut();
+    if (userSnapshot.docs.isEmpty) {
+      // Cria o usuário administrador se não existir
+      await auth.registerWithEmailAndPassword(emailAdmin, senhaAdmin);
+
+      if (firebaseAuth.currentUser != null) {
+        await firestore
+            .collection('Users')
+            .doc(firebaseAuth.currentUser!.uid)
+            .set(
+          {
+            "id": firebaseAuth.currentUser!.uid,
+            "E-mail": emailAdmin,
+            "Nome Completo": 'admin',
+            "Numero de Telefone": '',
+            "CPF": '',
+            "Admin": true,
+          },
+        );
+        await firebaseAuth.signOut();
+        log("== User admin not exist, created");
+      }
+    } else {
+      log("== User admin already exists");
     }
+  } catch (e) {
+    log("Erro ao criar usuário admin: $e");
   }
 }

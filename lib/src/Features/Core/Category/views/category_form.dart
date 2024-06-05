@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/category.dart';
 import '../provider/firestore_provider.dart';
 
@@ -38,10 +37,9 @@ class CategoryForm extends StatelessWidget {
                 final data = <String, String>{
                   "name": _formData['name']!,
                 };
-                FirestoreProvider.putDocument(
-                  'categories',
+                FirestoreProvider.updateCategory(
                   data,
-                  documentId: _formData['id'],
+                  categoryId: _formData['id'],
                 );
                 Navigator.of(context).pop();
               }
@@ -57,7 +55,9 @@ class CategoryForm extends StatelessWidget {
             children: [
               TextFormField(
                 initialValue: _formData['name'],
-                decoration: const InputDecoration(labelText: 'Nome'),
+                decoration: const InputDecoration(
+                  labelText: 'Nome',
+                ),
                 validator: (value) {
                   return null;
                 },

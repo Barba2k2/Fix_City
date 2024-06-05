@@ -6,14 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 
-import '../../../../CommomWidgets/Buttons/primary_button.dart';
 import '../../../../Constants/colors.dart';
 import '../../../../Controller/theme_controller.dart';
-import '../../Category/provider/fireauth_provider.dart';
-import '../model/chamados_model.dart';
 import '../../../Authentication/Models/user_model.dart';
+import '../../Category/provider/fireauth_provider.dart';
 import '../Controller/user_controller.dart';
 import '../Widgets/chamados_page_body_header.dart';
+import '../model/chamados_model.dart';
 import 'list_chamados_screen.dart';
 
 class ChamadosScreen extends StatefulWidget {
@@ -26,34 +25,6 @@ class ChamadosScreen extends StatefulWidget {
 }
 
 class _ChamadosScreenState extends State<ChamadosScreen> {
-  /// Exibe um diálogo perguntando se o usuário deseja sair do aplicativo.
-  /// Retorna `true` se o usuário confirmar a saída, e `false` caso contrário.
-  Future<bool> _onWillPop(BuildContext context) async {
-    return await showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Você deseja sair?'),
-            content: const Text(
-              'Você realmente deseja sair do aplicativo?',
-            ),
-            actions: [
-              SizedBox(
-                width: 100,
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text("Não"),
-                ),
-              ),
-              MyPrimaryButton(
-                isFullWidth: false,
-                onPressed: () => Navigator.of(context).pop(true),
-                text: "Sim",
-              ),
-            ],
-          ),
-        ) ??
-        false;
-  }
 
   @override
   Widget build(BuildContext context) {

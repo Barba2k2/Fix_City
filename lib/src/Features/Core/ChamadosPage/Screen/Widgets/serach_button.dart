@@ -23,10 +23,10 @@ class FilterButton extends StatelessWidget {
         onFiltered(results); // Atualiza os resultados exibidos
       },
       style: ButtonStyle(
-        padding: MaterialStateProperty.all(
+        padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),

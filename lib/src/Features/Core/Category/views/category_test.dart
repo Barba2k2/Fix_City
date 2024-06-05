@@ -11,11 +11,11 @@ class CategoryTest extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-        stream: FirestoreProvider.getdocumentsStream('categories'),
+        stream: FirestoreProvider.getCategoriesStream(),
         builder: (context, AsyncSnapshot<List<Category>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator.adaptive(),
             );
           }
 
@@ -36,8 +36,9 @@ class CategoryTest extends StatelessWidget {
 
           return ListView.builder(
             itemCount: snapshot.data?.length,
-            itemBuilder: (ctx, i) =>
-                CategoryTile(snapshot.data?[i] as Category),
+            itemBuilder: (ctx, i) => CategoryTile(
+              snapshot.data![i],
+            ),
           );
         },
       ),

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -14,7 +13,6 @@ import '../Form/Screens/edit_report.dart';
 import '../model/chamados_model.dart';
 
 class ChamadosWidget extends StatefulWidget {
-  // Construtor recebe um objeto ReportingModel e opcionalmente um UserModel
   const ChamadosWidget(this._reportingModel, {this.userModel, super.key});
   final ReportingModel _reportingModel;
   final UserModel? userModel;
@@ -34,17 +32,11 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
       }
     }
 
-    // Obtém instância do controlador de tema usando Get.find()
     final ThemeController themeController = Get.find();
-
-    // Obtém o estado atual do modo escuro/claro
     final isDark = themeController.isDarkMode.value;
-
-    // Obtém instância do controlador de usuário usando Get.find()
     final UserController userController = Get.find();
 
     Future<bool> showExitDialog(BuildContext context) async {
-      // Usando Completer para obter o resultado final
       final completer = Completer<bool>();
 
       Get.defaultDialog(
@@ -57,12 +49,13 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
         confirm: MyPrimaryButton(
           isFullWidth: false,
           onPressed: () {
-            FirestoreProvider.putDocument(
+            FirestoreProvider.updateDocument(
               "Chamados",
               {"Status do chamado": "Cancelado"},
               documentId: widget._reportingModel.chamadoId,
             );
             Navigator.pop(context);
+            completer.complete(true);
           },
           text: "Sim",
         ),
@@ -71,6 +64,7 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
           child: OutlinedButton(
             onPressed: () {
               Navigator.pop(context);
+              completer.complete(false);
             },
             child: const Text("Não"),
           ),
@@ -83,8 +77,6 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
       stream: userController.userStream,
       builder: (context, snapshot) {
         final user = snapshot.data;
-
-        // Verifica se o usuário é um administrador
         bool isAdmin = user?.isAdmin ?? false;
 
         return Padding(
@@ -94,7 +86,6 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
             height: 250,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              // Define a cor de fundo com base no modo escuro/claro
               color: isDark ? tDarkCard : Colors.white70,
             ),
             child: Padding(
@@ -120,8 +111,7 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
                             if (isUnread)
                               const Icon(
                                 Icons.notifications,
-                                color:
-                                    Colors.red, // Customize the color as needed
+                                color: Colors.red,
                                 size: 20,
                               ),
                             const Gap(10),
@@ -161,7 +151,6 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
                             Expanded(
                               flex: 0,
                               child: Text(
-                                textAlign: TextAlign.left,
                                 "Descrição: ",
                                 style:
                                     Theme.of(context).textTheme.headlineMedium,
@@ -182,7 +171,6 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
                             Expanded(
                               flex: 0,
                               child: Text(
-                                textAlign: TextAlign.left,
                                 "Categoria: ",
                                 style:
                                     Theme.of(context).textTheme.headlineMedium,
@@ -203,7 +191,6 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
                             Expanded(
                               flex: 0,
                               child: Text(
-                                textAlign: TextAlign.left,
                                 "Status: ",
                                 style:
                                     Theme.of(context).textTheme.headlineMedium,
@@ -224,7 +211,6 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
                             Expanded(
                               flex: 0,
                               child: Text(
-                                textAlign: TextAlign.left,
                                 "Data criado: ",
                                 style:
                                     Theme.of(context).textTheme.headlineMedium,
@@ -245,7 +231,6 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
                             Expanded(
                               flex: 0,
                               child: Text(
-                                textAlign: TextAlign.left,
                                 "Data atualizada: ",
                                 style:
                                     Theme.of(context).textTheme.headlineMedium,
@@ -261,6 +246,7 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
                             ),
                           ],
                         ),
+                        const Gap(10),
                         if (widget._reportingModel.statusMessage != "Cancelado")
                           if (widget._reportingModel.statusMessage !=
                               "Encerrado")
@@ -268,48 +254,63 @@ class _ChamadosWidgetState extends State<ChamadosWidget> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 if (isAdmin)
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.all(5.0),
-                                      minimumSize: const Size(100, 20),
-                                      elevation: 5,
-                                    ),
-                                    onPressed: () async {
-                                      final documentData =
-                                          await FirestoreProvider
-                                              .getDocumentById(
-                                        "Chamados",
-                                        widget._reportingModel.chamadoId!,
-                                      );
-                                      Get.to(
-                                        () => EditReportFormScreenNew(
-                                          documentData: documentData,
-                                        ),
-                                      );
-                                    },
-                                    child: Text(
-                                      'Editar',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineMedium,
+                                  SizedBox(
+                                    width: 140,
+                                    height: 40,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.all(5.0),
+                                        // minimumSize: const Size(120, 30),
+                                        elevation: 5,
+                                      ),
+                                      onPressed: () async {
+                                        final documentData =
+                                            await FirestoreProvider
+                                                .getDocumentById(
+                                          "Chamados",
+                                          widget._reportingModel.chamadoId!,
+                                        );
+                                        Get.to(
+                                          () => EditReportFormScreenNew(
+                                            documentData: documentData,
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        'Editar',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineLarge
+                                            ?.copyWith(
+                                              fontSize: 20,
+                                            ),
+                                      ),
                                     ),
                                   ),
-                                const Gap(20),
+                                const Gap(40),
                                 if (widget._reportingModel.statusMessage ==
                                     "Enviado")
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
+                                  SizedBox(
+                                    width: 140,
+                                    height: 40,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.all(5.0),
-                                        minimumSize: const Size(100, 20),
-                                        elevation: 5),
-                                    onPressed: () {
-                                      showExitDialog(context);
-                                    },
-                                    child: Text(
-                                      'Cancelar',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineMedium,
+                                        // minimumSize: const Size(120, 30),
+                                        elevation: 5,
+                                      ),
+                                      onPressed: () {
+                                        showExitDialog(context);
+                                      },
+                                      child: Text(
+                                        'Cancelar',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineLarge
+                                            ?.copyWith(
+                                              fontSize: 20,
+                                            ),
+                                      ),
                                     ),
                                   ),
                               ],

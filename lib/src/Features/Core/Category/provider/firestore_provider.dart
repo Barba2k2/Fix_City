@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +7,102 @@ import '../models/category.dart';
 class FirestoreProvider with ChangeNotifier {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  static Stream<List<Category>> getdocumentsStream(String collectionName) {
-    return _firestore.collection(collectionName).snapshots().map(
+  static Stream<List<Category>> getCategoriesStream() {
+    return _firestore
+        .collection('categories')
+        .doc('categoriesDocId')
+        .snapshots()
+        .map(
       (snapshot) {
-        return snapshot.docs.map((doc) => Category.fromFirestore(doc)).toList();
+        final data = snapshot.data();
+        if (data == null) return [];
+        return data.entries
+            .map((e) => Category(id: e.key, name: e.value['name']))
+            .toList();
       },
     );
+  }
+
+  static Future<void> updateCategory(Map<String, String> categoryData,
+      {String? categoryId}) async {
+    try {
+      DocumentReference docRef =
+          _firestore.collection('categories').doc('categoriesDocId');
+
+      if (categoryId == null || categoryId.isEmpty) {
+        categoryId = docRef.collection('autoId').doc().id;
+      }
+
+      await docRef.set(
+        {categoryId: categoryData},
+        SetOptions(merge: true),
+      );
+      log("Sucesso ao adicionar ou atualizar categoria");
+    } catch (e) {
+      throw 'Erro ao adicionar ou atualizar a categoria: $e';
+    }
+  }
+
+  static Future<void> removeCategory(String categoryId) async {
+    try {
+      DocumentReference docRef =
+          _firestore.collection('categories').doc('categoriesDocId');
+
+      await docRef.update({categoryId: FieldValue.delete()});
+      log("Sucesso ao remover categoria");
+    } catch (e) {
+      throw 'Erro ao remover a categoria: $e';
+    }
+  }
+
+  static Future<Map<String, dynamic>> getCategoryById(String categoryId) async {
+    DocumentReference docRef =
+        _firestore.collection('categories').doc('categoriesDocId');
+
+    DocumentSnapshot documentSnapshot = await docRef.get();
+
+    if (documentSnapshot.exists) {
+      final data = documentSnapshot.data() as Map<String, dynamic>;
+      return data[categoryId] as Map<String, dynamic>;
+    } else {
+      throw 'Categoria não encontrada';
+    }
+  }
+
+  static Future<void> updateDocument(
+      String collectionName, Map<String, dynamic> data,
+      {String? documentId}) async {
+    try {
+      DocumentReference docRef =
+          _firestore.collection(collectionName).doc(documentId);
+      await docRef.update(data);
+      log("Documento atualizado com sucesso");
+    } catch (e) {
+      throw 'Erro ao atualizar o documento: $e';
+    }
+  }
+
+  static Future<void> removeDocument(
+      String collectionName, String documentId) async {
+    try {
+      await _firestore.collection(collectionName).doc(documentId).delete();
+      log("Documento removido com sucesso");
+    } catch (e) {
+      throw 'Erro ao remover o documento: $e';
+    }
+  }
+
+  static Future<Map<String, dynamic>> getDocumentById(
+      String collectionName, String documentId) async {
+    DocumentReference docRef =
+        _firestore.collection(collectionName).doc(documentId);
+    DocumentSnapshot documentSnapshot = await docRef.get();
+
+    if (documentSnapshot.exists) {
+      return documentSnapshot.data() as Map<String, dynamic>;
+    } else {
+      throw 'Documento não encontrado';
+    }
   }
 
   static Stream<List<DocumentSnapshot>> getDocumentsBy(
@@ -25,69 +114,8 @@ class FirestoreProvider with ChangeNotifier {
           .snapshots()
           .map((querySnapshot) => querySnapshot.docs);
     } catch (e) {
-      log('Erro ao obter chamados: $e');
+      log('Erro ao obter documentos: $e');
       return Stream.value([]);
     }
-  }
-
-  static Future<List<String>> getDocuments(String collectionName) async {
-    List<String> categories = [];
-
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance.collection(collectionName).get();
-
-    for (var doc in querySnapshot.docs) {
-        categories.add(
-          doc['name'],
-        );
-      }
-
-    return categories;
-  }
-
-  static Future<void> putDocument(
-    String collectionName,
-    Map<String, dynamic> data, {
-    String? documentId,
-  }) async {
-    try {
-      if (documentId != null) {
-        // Se documentId não for nulo, atualize o documento existente.
-        await _firestore
-            .collection(collectionName)
-            .doc(documentId)
-            .update(data);
-      } else {
-        // Se documentId for nulo, adicione um novo documento à coleção.
-        await _firestore.collection(collectionName).add(data);
-      }
-      log("Sucess putDocument");
-    } catch (e) {
-      throw 'Erro ao adicionar ou atualizar o documento: $e';
-    }
-  }
-
-  static Future<void> removeDocument(
-    String collectionName,
-    String documentId,
-  ) async {
-    try {
-      await _firestore.collection(collectionName).doc(documentId).delete();
-      log("Sucess removeDocument");
-    } catch (e) {
-      throw 'Erro ao remover o documento: $e';
-    }
-  }
-
-  static Future<Map<String, dynamic>> getDocumentById(
-    String collectionName,
-    String documentId,
-  ) async {
-    DocumentReference documentReference =
-        _firestore.collection(collectionName).doc(documentId);
-
-    DocumentSnapshot documentSnapshot = await documentReference.get();
-
-    return documentSnapshot.data() as Map<String, dynamic>;
   }
 }

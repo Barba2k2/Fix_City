@@ -1,19 +1,17 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../Constants/colors.dart';
 import '../../Category/models/category.dart';
 import '../../Category/provider/firestore_provider.dart';
 import '../Controller/chamados_controller.dart';
-import '../model/chamados_model.dart';
 import '../Widgets/chamados_widget.dart';
 import '../Widgets/report_detail_screen.dart';
-import 'chamados_screen.dart';
+import '../model/chamados_model.dart';
 import 'Widgets/search_handler.dart';
 import 'Widgets/serach_button.dart';
+import 'chamados_screen.dart';
 
 class AdminChamadosNew extends StatefulWidget {
   const AdminChamadosNew({super.key, required this.widget, this.usuarioLogado});
@@ -29,14 +27,14 @@ class _AdminChamadosState extends State<AdminChamadosNew> {
   final searchBar = TextEditingController();
   final SearchHandler searchHandler = SearchHandler();
   List<ReportingModel> searchResults = [];
-  List<String> categories = [];
+  List<Category> categories = [];
   final isSelected = TextEditingController();
 
   Future<void> _loadCategories() async {
-    List<String> categories =
-        await FirestoreProvider.getDocuments('categories');
-    setState(() {
-      categories = categories;
+    FirestoreProvider.getCategoriesStream().listen((categories) {
+      setState(() {
+        this.categories = categories;
+      });
     });
   }
 
@@ -46,13 +44,9 @@ class _AdminChamadosState extends State<AdminChamadosNew> {
     _loadCategories();
   }
 
-  // Função para lidar com a pesquisa
   void handleSearch(String query) async {
     try {
-      // Chama a função para pesquisar relatórios com base na consulta
-      final results = await searchHandler.searchReports(
-        query.trim(),
-      );
+      final results = await searchHandler.searchReports(query.trim());
       setState(() {
         searchResults = results;
       });
@@ -61,25 +55,20 @@ class _AdminChamadosState extends State<AdminChamadosNew> {
     }
   }
 
-  // Função para limpar a pesquisa
   void clearSearch() {
-    // Limpa o texto da barra de pesquisa
     searchBar.clear();
     setState(() {
-      // Limpa os resultados da pesquisa
       searchResults = [];
     });
   }
 
   void clearSearchCategory(isSelected) {
     setState(() {
-      // Limpa os resultados da pesquisa
-      isSelected.text = isSelected;
+      this.isSelected.text = isSelected;
       searchResults = [];
     });
   }
 
-  // Função para atualizar os resultados da pesquisa após filtragem
   void onFiltered(List<ReportingModel> filteredResults) {
     setState(() {
       searchResults = filteredResults;
@@ -107,9 +96,8 @@ class _AdminChamadosState extends State<AdminChamadosNew> {
             ),
           ),
         ),
-        // Botões de Filtro
         StreamBuilder(
-          stream: FirestoreProvider.getdocumentsStream('categories'),
+          stream: FirestoreProvider.getCategoriesStream(),
           builder: (context, AsyncSnapshot<List<Category>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -137,8 +125,8 @@ class _AdminChamadosState extends State<AdminChamadosNew> {
                 child: Row(
                   children: [
                     Wrap(
-                      spacing: 8.0, // espaço horizontal entre os botões
-                      runSpacing: 4.0, // espaço vertical entre os botões
+                      spacing: 8.0,
+                      runSpacing: 4.0,
                       children: snapshot.data!.map(
                         (category) {
                           return FilterButton(
@@ -159,59 +147,55 @@ class _AdminChamadosState extends State<AdminChamadosNew> {
               ? usuarioLogado != null
                   ? StreamBuilder(
                       stream: FirestoreProvider.getDocumentsBy(
-                          "Chamados", "Id do Usuario", usuarioLogado),
+                        "Chamados",
+                        "Id do Usuario",
+                        usuarioLogado,
+                      ),
                       builder: (context,
                           AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-                        // Verificar se há erro no snapshot
                         if (snapshot.hasError) {
                           log('Erro: ${snapshot.error}');
                         }
 
-                        // Verificar se o snapshot está carregando
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
-                              child: CircularProgressIndicator());
+                            child: CircularProgressIndicator(),
+                          );
                         }
 
-                        // Verificar se o snapshot tem dados e não é nulo
                         if (!snapshot.hasData || snapshot.data == null) {
                           return const Center(
                             child: Text(
                               'Nenhum dado disponível',
-                              style: TextStyle(color: whiteColor),
+                              style: TextStyle(color: Colors.red),
                             ),
                           );
                         }
 
-                        // Se tudo estiver ok, construir a lista
                         final reportList = snapshot.data!.map(
                           (doc) {
-                            return ReportingModel.fromSnapshot(
-                              doc as QueryDocumentSnapshot<
-                                  Map<String, dynamic>>,
-                            );
+                            return ReportingModel.fromSnapshot(doc
+                                as QueryDocumentSnapshot<Map<String, dynamic>>,);
                           },
                         ).toList();
 
-                        // Construir a lista de relatórios
                         return ListView.builder(
                           itemBuilder: (context, index) {
                             final report = reportList[index];
 
-                            // Adicionar um GestureDetector para lidar com o toque nos relatórios
                             return GestureDetector(
                               onTap: () {
-                                // Navegar para a tela de detalhes do relatório
-                                Get.to(() =>
-                                    ReportDetailScreen(reportingModel: report));
+                                Get.to(
+                                  () => ReportDetailScreen(
+                                    reportingModel: report,
+                                  ),
+                                );
                               },
-                              child: ChamadosWidget(
-                                  report), // Exibir o widget do relatório
+                              child: ChamadosWidget(report),
                             );
                           },
-                          itemCount: reportList
-                              .length, // Definir o número de itens na lista
+                          itemCount: reportList.length,
                         );
                       },
                     )
@@ -228,7 +212,7 @@ class _AdminChamadosState extends State<AdminChamadosNew> {
                           return const Center(
                             child: Text(
                               'Nenhum dado disponível',
-                              style: TextStyle(color: whiteColor),
+                              style: TextStyle(color: Colors.red),
                             ),
                           );
                         }
