@@ -25,14 +25,11 @@ class ChamadosScreen extends StatefulWidget {
 }
 
 class _ChamadosScreenState extends State<ChamadosScreen> {
-
   @override
   Widget build(BuildContext context) {
-    /// Obtém instâncias dos controladores de usuário e tema usando `Get.find()`.
     final UserController userController = Get.find();
     final ThemeController themeController = Get.find();
 
-    /// Define a data atual e a formata no formato "dd/mm/yyyy".
     DateTime currentDate = DateTime.now();
     final day = currentDate.day.toString().padLeft(2, '0');
     final month = currentDate.month;
@@ -41,47 +38,33 @@ class _ChamadosScreenState extends State<ChamadosScreen> {
     User? usuarioLogado = FireauthProvider.getCurrentUser();
 
     if (usuarioLogado != null) {
-      // Faça algo com o usuário logado
       log('Usuário logado: ${usuarioLogado.email}');
     } else {
-      // Não há usuário logado
       log('Nenhum usuário logado.');
     }
 
-    // Widget observável que reage às mudanças de estado (mudanças no modo escuro/claro)
     return Obx(
       () {
-        // Define se o modo escuro está ativado ou não
         final isDark = themeController.isDarkMode.value;
 
-        // Estrutura principal da página de chamados
         return SafeArea(
           child: Scaffold(
-            // Chave baseada no modo escuro ou claro
             key: ValueKey(Get.isDarkMode),
-        
-            // Cor de fundo baseada no modo escuro ou claro
             backgroundColor: isDark ? tDarkColor : Colors.grey.shade200,
-        
-            // Barra de aplicativo
             appBar: AppBar(
-              // Configurações de cores e aparência baseadas no modo escuro ou claro
               backgroundColor: isDark ? tDarkColor : whiteColor,
               foregroundColor: isDark ? Colors.black : whiteColor,
               elevation: 0,
               centerTitle: true,
               automaticallyImplyLeading: false,
-        
-              // Título exibindo informações do usuário
               title: StreamBuilder<UserModel?>(
                 stream: userController.userStream,
                 builder: (context, snapshot) {
                   final user = snapshot.data;
-                  // bool isAdmin = user?.isAdmin ?? false;
+
                   if (user == null) {
                     return const Text('Nome de usuário não disponivel');
                   } else {
-                    // Mostra a imagem e o nome do usuário
                     return ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.amber.shade400,
@@ -94,15 +77,13 @@ class _ChamadosScreenState extends State<ChamadosScreen> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
-                        user.fullName, //# Nome do usuário logado
+                        user.fullName,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     );
                   }
                 },
               ),
-        
-              // Ações na barra de aplicativos (calendário e notificações)
               actions: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -127,8 +108,6 @@ class _ChamadosScreenState extends State<ChamadosScreen> {
                 ),
               ],
             ),
-        
-            // Corpo principal da página
             body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 28),
               child: Column(
@@ -142,8 +121,7 @@ class _ChamadosScreenState extends State<ChamadosScreen> {
                       builder: (context, snapshot) {
                         final user = snapshot.data;
                         bool isAdmin = user?.isAdmin ?? false;
-        
-                        // Mostra chamados para admin ou usuário comum
+
                         return isAdmin
                             ? AdminChamadosNew(
                                 widget: widget,

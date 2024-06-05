@@ -21,7 +21,7 @@ class UserRepository extends GetxController {
         log('========> ${user.toJson()}');
         DocumentReference docRef =
             await _db.collection("Users").add(user.toJson());
-        // Retorna o ID do documento criado
+
         log('Docuemnto do usuário: $docRef');
         return docRef.id;
       }
@@ -39,19 +39,15 @@ class UserRepository extends GetxController {
 
   Future<String> createUserWithGoogle(UserModel user) async {
     try {
-      // Verificar se o usuário já existe baseado no e-mail
       if (await recordExist(user.email)) {
         throw "O e-mail informado já possui um cadastro";
       } else {
-        // Obter uma referência ao documento que você quer adicionar/definir
         DocumentReference docRef = _db.collection("Users").doc(user.id);
 
-        // Adicionar o UserModel ao Firestore
         await docRef.set(user.toJson());
 
         log('Documento do usuário pelo google: ${docRef.id}');
 
-        // Retorna o ID do documento criado
         return docRef.id;
       }
     } on FirebaseAuthException catch (e) {
@@ -172,7 +168,6 @@ class UserRepository extends GetxController {
     }
   }
 
-  //* Verifica se o usuario existe com o email ou telefone informado
   Future<bool> recordExist(String email) async {
     try {
       final snapshot =

@@ -41,8 +41,6 @@ class UpdateProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20),
-
-          /// -- Future Builder para carregar os dados do usuário
           child: FutureBuilder(
             future: controller.getUserData(),
             builder: (context, snapshot) {
@@ -60,11 +58,8 @@ class UpdateProfileScreen extends StatelessWidget {
                   //Imagem & Form
                   return Column(
                     children: [
-                      /// -- IMAGE with ICON
                       const ImageWithIcon(),
                       const Gap(50),
-
-                      /// -- Form (Passa os dados para o FormScreen)
                       ProfileFormScreen(
                         fullName: fullName,
                         email: email,

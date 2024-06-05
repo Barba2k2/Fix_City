@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../../../Constants/colors.dart';
 import '../../../../Constants/image_strings.dart';
@@ -32,7 +31,7 @@ class ImageWithIcon extends StatelessWidget {
               color: tPrimaryColor,
             ),
             child: const Icon(
-              LineAwesomeIcons.alternate_pencil,
+              Icons.edit,
               color: Colors.black,
               size: 20,
             ),

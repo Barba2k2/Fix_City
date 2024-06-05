@@ -48,14 +48,16 @@ class _EditReportFormScreenNewState extends State<EditReportFormScreenNew> {
     if (submitData()) {
       final Map<String, dynamic> updatedReport = {
         "Status do chamado": widget.documentData["Status do chamado"],
-        "observations_admin": FieldValue.arrayUnion([
-          {
-            "ready": false,
-            "observation": observation.text,
-            "data": currentDate,
-            "status": widget.documentData["Status do chamado"],
-          }
-        ]),
+        "observations_admin": FieldValue.arrayUnion(
+          [
+            {
+              "ready": false,
+              "observation": observation.text,
+              "data": currentDate,
+              "status": widget.documentData["Status do chamado"],
+            }
+          ],
+        ),
       };
 
       ReportController().updateReport(
@@ -90,9 +92,7 @@ class _EditReportFormScreenNewState extends State<EditReportFormScreenNew> {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 5,
-        //shadow
         titleSpacing: 10,
-        //space between leading icon and title
       ),
       body: Container(
         color: Colors.grey.withOpacity(.1),

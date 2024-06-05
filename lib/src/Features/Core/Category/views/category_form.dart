@@ -23,12 +23,15 @@ class CategoryForm extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Criar categoria',
+          'Criar nova categoria',
           style: Theme.of(context).textTheme.headlineLarge,
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.save),
+            icon: const Icon(
+              Icons.save,
+              size: 30,
+            ),
             onPressed: () {
               final isValid = _form.currentState!.validate();
 

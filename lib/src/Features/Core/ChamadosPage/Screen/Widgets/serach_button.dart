@@ -7,7 +7,6 @@ class FilterButton extends StatelessWidget {
   final String category;
   final ValueChanged<List<ReportingModel>> onFiltered;
 
-  // Construtor da classe FilterButton
   const FilterButton({
     super.key,
     required this.category,
@@ -18,9 +17,8 @@ class FilterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: () async {
-        // Chama a função para filtrar relatórios por categoria
         final results = await SearchHandler().filterReportsByCategory(category);
-        onFiltered(results); // Atualiza os resultados exibidos
+        onFiltered(results);
       },
       style: ButtonStyle(
         padding: WidgetStateProperty.all(

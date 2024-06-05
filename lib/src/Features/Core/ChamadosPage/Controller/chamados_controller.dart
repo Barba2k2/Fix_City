@@ -12,19 +12,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../model/chamados_model.dart';
 import '../model/generate_report_id.dart';
 
-// Classe para gerenciar operações relacionadas aos chamados
 class ReportController extends GetxController {
-  // Inicializações das instâncias do Firebase
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final user = FirebaseAuth.instance.currentUser;
 
-  // Define nomes de coleções do Firestore como constantes
   static const usersCollection = 'Users';
   static const chamadosCollection = 'Chamados';
 
-  // Função para construir o caminho do arquivo no armazenamento
   String buildFilePath(
     String baseFolder,
     String userName,
@@ -35,7 +31,6 @@ class ReportController extends GetxController {
     return '$baseFolder/$userName/$chamadoFolder/$fileName';
   }
 
-  // Método para fazer upload de arquivos (imagens e vídeos) para o Firebase Storage
   Future<String?> uploadFile(String fileName, String filePath) async {
     if (filePath.isEmpty) {
       return null;
@@ -44,21 +39,17 @@ class ReportController extends GetxController {
     File file = File(filePath);
 
     try {
-      // Cria uma referência no Firebase Storage para salvar o arquivo
       final ref = _firebaseStorage.ref().child('path_to_save/$fileName');
       await ref.putFile(file);
 
-      // Obter a URL do arquivo após o upload
       final url = await ref.getDownloadURL();
       return url;
     } catch (e) {
-      // Exibe uma notificação de erro caso ocorra alguma falha
       Get.snackbar('Erro', 'Erro ao fazer o upload do arquivo.');
       return null;
     }
   }
 
-  // Função para fazer upload de vários arquivos e salvar o relatório no Firestore
   Future<Map<String, String?>> uploadFilesAndSaveReport(
     PlatformFile imageFile,
     PlatformFile? videoFile,
@@ -67,7 +58,6 @@ class ReportController extends GetxController {
     try {
       final chamadoNumber = await getChamadoNumberForUser(userName);
 
-      // Constrói os caminhos dos arquivos para o armazenamento
       final imagePath = buildFilePath(
         'Chamados',
         userName,
@@ -83,7 +73,6 @@ class ReportController extends GetxController {
             )
           : null;
 
-      // Faz upload dos arquivos e obtém suas URLs
       final imageUrl = await uploadFile(imagePath, imageFile.path!);
       final videoUrl = videoFile != null
           ? await uploadFile(videoPath!, videoFile.path!)
@@ -93,41 +82,32 @@ class ReportController extends GetxController {
         throw Exception("Erro ao fazer upload da imagem.");
       }
 
-      // Retorna um mapa com as URLs dos arquivos
       return {
         'imagemChamado': imageUrl,
         'videoChamado': videoUrl,
       };
     } catch (e) {
-      // Registra e notifica sobre qualquer erro ocorrido
       log('Erro ao fazer upload dos arquivos: $e');
       Get.snackbar('Erro', 'Erro ao fazer upload dos arquivos selecionados.');
       rethrow;
     }
   }
 
-  // Função para obter o nome completo do usuário com base no ID do usuário
   Future<String?> getUserName(String userId) async {
-    // Busca o documento do usuário no Firestore pelo seu ID
     DocumentSnapshot userDoc =
         await _firestore.collection(usersCollection).doc(userId).get();
 
-    // Converte os dados do documento em um mapa
     Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
 
-    // Verifica se o documento contém um campo 'Nome Completo' e retorna seu valor
     if (userData != null && userData.containsKey('Nome Completo')) {
       return userData['Nome Completo'];
     }
 
-    // Se não encontrar o campo 'Nome Completo', retorna null
     return null;
   }
 
-  // Função para obter o número de chamados feitos por um usuário
   Future<int> getChamadoNumberForUser(String userName) async {
     try {
-      // Faz uma consulta no Firestore para contar quantos chamados o usuário já fez
       int existingChamados = await _firestore
           .collection(usersCollection)
           .doc(userName)
@@ -135,16 +115,13 @@ class ReportController extends GetxController {
           .get()
           .then((snapshot) => snapshot.docs.length);
 
-      // Retorna o número de chamados existentes + 1
       return existingChamados + 1;
     } catch (e) {
-      // Registra o erro no console e relança a exceção
       log('Erro ao obter o número do chamado: $e');
-      rethrow; // Re-lança a exceção para ser tratada em outro lugar, se necessário
+      rethrow;
     }
   }
 
-  // Função para salvar um novo chamado na coleção do usuário no Firestore.
   Future<void> addNewReport(
     String address,
     String cep,
@@ -162,14 +139,11 @@ class ReportController extends GetxController {
     bool showMessage = false,
     bool isDone = false,
   }) async {
-    // Seção para validar os dados inseridos pelo usuário.
     try {
-      // Obtem o nome do usuário pelo seu ID.
       String? userName = await getUserName(user!.uid);
 
       Map<String, String?> fileUrls = {};
 
-      // Se o nome do usuário e o arquivo de imagem forem válidos, faz upload dos arquivos.
       if (userName != null && imageFile != null) {
         fileUrls = await uploadFilesAndSaveReport(
           imageFile,
@@ -180,11 +154,9 @@ class ReportController extends GetxController {
         throw Exception("Erro ao obter o nome do usuário.");
       }
 
-      // Define a data e hora atual e gera um ID para o chamado.
       DateTime dateTime = DateTime.now();
       final chamadoId = GenerateReportId.generateRandomNumber();
 
-      // Cria um novo modelo de chamado com os dados fornecidos.
       final report = ReportingModel(
         chamadoId: chamadoId,
         userId: user!.uid,
@@ -205,7 +177,6 @@ class ReportController extends GetxController {
         locationReport: GeoPoint(latitudeReport!, longitudeReport!),
       );
 
-      // Salva o chamado no Firestore sob a coleção de chamados
       DocumentReference documentReference =
           _firestore.collection(chamadosCollection).doc(chamadoId);
 
@@ -235,15 +206,12 @@ class ReportController extends GetxController {
     }
   }
 
-  // StreamController para lidar com os chamados de um usuário específico.
   final StreamController<QuerySnapshot> _streamController =
       StreamController.broadcast();
 
-  // StreamController para lidar com todos os chamados (para admin).
   final StreamController<QuerySnapshot> _adminStreamController =
       StreamController.broadcast();
 
-  // Stream para ouvir as atualizações de todos os chamados (para admin).
   Stream<QuerySnapshot> adminStream() {
     _firestore.collection(chamadosCollection).snapshots().listen(
       (data) {
@@ -257,7 +225,6 @@ class ReportController extends GetxController {
     return _adminStreamController.stream;
   }
 
-  // Função para priorizar documentos com a categoria 'Árvore Caída'.
   List<QueryDocumentSnapshot> prioritizeDocs(List<QueryDocumentSnapshot> docs) {
     final arvoreCaidaDocs = <QueryDocumentSnapshot>[];
     final otherDocs = <QueryDocumentSnapshot>[];

@@ -510,7 +510,7 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
                             videoFile: selectedVideoFile,
                             isDone: false,
                           );
-                          Navigator.pop(context);
+                          Get.back();
                         }
                       },
                       child: Text(

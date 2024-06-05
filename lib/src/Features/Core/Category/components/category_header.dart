@@ -5,9 +5,12 @@ import 'package:get/get.dart';
 import '../views/category_form.dart';
 
 class CategoryHeader extends StatelessWidget {
-  const CategoryHeader({super.key, required this.formattedDate});
-
   final String formattedDate;
+
+  const CategoryHeader({
+    super.key,
+    required this.formattedDate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +34,14 @@ class CategoryHeader extends StatelessWidget {
             ],
           ),
         ),
-
-        // Exibir o botão apenas para usuários não administradores
         Column(
           children: [
             const Gap(10),
             ElevatedButton(
               onPressed: () {
-                Get.to(() => CategoryForm());
+                Get.to(
+                  () => CategoryForm(),
+                );
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),

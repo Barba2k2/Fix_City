@@ -14,7 +14,7 @@ class UserService extends GetxController {
   Future<void> createUser(UserModel user) async {
     try {
       await _db.collection("Users").add(user.toJson());
-      // Mostra uma snackbar de sucesso quando a operação é bem-sucedida
+
       Get.snackbar(
         'Sucesso',
         'Sua conta foi criada',
@@ -23,7 +23,6 @@ class UserService extends GetxController {
         colorText: whiteColor,
       );
     } catch (error) {
-      // Mostra uma snackbar de erro se algo der errado
       Get.snackbar(
         'Erro',
         'Algo saiu mal. Tente novamente mais tarde.',
@@ -31,7 +30,7 @@ class UserService extends GetxController {
         colorText: Colors.black,
         backgroundColor: Colors.red,
       );
-      //@ Imprime o erro no console
+
       log('Erro ao criar usuário: $error');
     }
   }

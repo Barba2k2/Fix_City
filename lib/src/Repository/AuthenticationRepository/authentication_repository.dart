@@ -29,7 +29,6 @@ class AuthenticationRepository extends GetxController {
     _firebaseUser.bindStream(_auth.userChanges());
     FlutterNativeSplash.remove();
     setInitialScreen(_firebaseUser.value);
-    // ever(_firebaseUser, _setInitialScreen);
   }
 
   //* Getters
@@ -49,12 +48,9 @@ class AuthenticationRepository extends GetxController {
 
   //* Método para verificar se o login falhou devido a credenciais inválidas
   bool isInvalidCredentialsError(FirebaseAuthException e) {
-    // O código de erro 'user-not-found' indica que o e-mail não foi encontrado
-    // O código de erro 'wrong-password' indica que a senha está incorreta
     return e.code == 'user-not-found' || e.code == 'wrong-password';
   }
 
-  /// [EmailAuthentication] - LOGIN
   Future<MyLoginResult> loginWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -79,7 +75,6 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  /// [EmailAuthentication] - REGISTRO
   Future<void> registerWithEmailAndPassword(
     String email,
     String password,
@@ -99,10 +94,8 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  /// [EmailVerification] - VERIFICAÇÃO DE E-MAIL
   Future<void> sendEmailVerification() async {
     try {
-      // Verificando o estado do usuário antes de enviar o e-mail
       if (_auth.currentUser != null && !_auth.currentUser!.emailVerified) {
         await _auth.currentUser?.sendEmailVerification();
       } else {
@@ -120,11 +113,9 @@ class AuthenticationRepository extends GetxController {
 
   //* ---------------------------- LOGIN Social ---------------------------------*//
 
-  /// [GoogleAuthentication] - GOOGLE
   Future<UserCredential?> signInWithGoogle() async {
     GoogleSignInAccount? google;
     try {
-      // Aciona a autenticação do Google
       GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       google = googleUser;
     } catch (e) {
@@ -133,11 +124,9 @@ class AuthenticationRepository extends GetxController {
     }
 
     try {
-      // Obtem detalhes da requisição
       final GoogleSignInAuthentication? googleAuth =
           await google?.authentication;
 
-      // Cria uma nova credencial
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
@@ -146,10 +135,8 @@ class AuthenticationRepository extends GetxController {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
-      // Redirecionar para MyNavigationBar após o login bem-sucedido
       Get.to(() => const MyNavigationBar());
 
-      // Uma vez conectado, retorne o UserCredential
       return userCredential;
     } on FirebaseAuthException catch (e) {
       log('Erro com Firestore na criação de usuário com Google: $e');
@@ -165,17 +152,14 @@ class AuthenticationRepository extends GetxController {
   ///[FacebookAuthentication] - FACEBOOK
   Future<UserCredential> signInWithFacebook() async {
     try {
-      // Aciona o fluxo de Login
       final LoginResult loginResult = await FacebookAuth.instance.login(
         permissions: ['email'],
       );
 
-      // Crie uma credencial a partir do token de acesso
       final AccessToken accessToken = loginResult.accessToken!;
       final OAuthCredential facebookAuthCredential =
           FacebookAuthProvider.credential(accessToken.token);
 
-      // Uma vez conectado, retorne o UserCredential
       return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
     } on FirebaseAuthException catch (e) {
       throw e.message!;
@@ -190,7 +174,7 @@ class AuthenticationRepository extends GetxController {
   Future<void> resetPasswordEmail(String email) async {
     try {
       FirebaseAuth auth = FirebaseAuth.instance;
-      // Removido o .then e usando await
+
       await auth.sendPasswordResetEmail(email: email).then(
             (value) => log('E-mail enviado'),
           );
@@ -205,7 +189,6 @@ class AuthenticationRepository extends GetxController {
   }
 
   //? Desloga o usuário do aplicativo
-  /// [LogoutUser] - Valido para qualquer autenticação.
   Future<void> logout() async {
     try {
       await GoogleSignIn().signOut();
@@ -222,7 +205,6 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  /// [PhoneAuthentication] - LOGIN
   /*loginWithPhoneNo(String phoneNumber) async {
     try {
       await _auth.signInWithPhoneNumber(phoneNumber);
@@ -236,7 +218,6 @@ class AuthenticationRepository extends GetxController {
     }
   }*/
 
-  /// [PhoneAuthentication] - REGISTRO
   Future<void> phoneAuthentication(String phoneNo) async {
     try {
       //Verifica se o número de telefone ja está associado a uma conta.
@@ -262,8 +243,6 @@ class AuthenticationRepository extends GetxController {
           },
         );
       } else {
-        /// Se não estiver associado, exibe uma tela informando ao usuário
-        /// para atualizar os dados ou criar uma conta.
         Get.to(() => const UpdateOrRegisterScreen());
       }
     } on FirebaseAuthException catch (e) {
@@ -280,16 +259,14 @@ class AuthenticationRepository extends GetxController {
 
   Future<bool> isPhoneNumberRegistered(String phoneNo) async {
     try {
-      // Buscar o número de telefone na coleção 'Users'
       final querySnapshot = await FirebaseFirestore.instance
           .collection('Users')
           .where('Numero de Telefone', isEqualTo: phoneNo)
           .get();
 
-      // Se encontrarmos algum documento com esse número de telefone, retornamos verdadeiro
       if (querySnapshot.docs.isNotEmpty) {
         final UserModel user = UserModel.fromSnapshot(querySnapshot.docs.first);
-        // Aqui você pode logar ou fazer qualquer coisa com o usuário, se necessário.
+
         log('User Found: ${user.phoneNo}');
         return true;
       }
@@ -304,7 +281,6 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  /// [PhoneAuthentication] - VERIFICA O NUMERO DE TELEFONE VIA OTP
   Future<bool> verifyOTP(String otp) async {
     var credentials = await _auth.signInWithCredential(
       PhoneAuthProvider.credential(
@@ -315,13 +291,11 @@ class AuthenticationRepository extends GetxController {
     return credentials.user != null ? true : false;
   }
 
-  /// Updates the user's password
   Future<void> resetPasswordWithOTP(
     String newPassword,
     String confirmPassword,
   ) async {
     try {
-      // Validação das senhas
       if (newPassword != confirmPassword) {
         throw const MyExceptions('As senhas não coincidem.');
       }
@@ -329,7 +303,6 @@ class AuthenticationRepository extends GetxController {
         Helper.validatePassword(newPassword);
       }
 
-      // Atualizar a senha
       if (_firebaseUser.value != null) {
         await _firebaseUser.value!.updatePassword(newPassword);
       } else {

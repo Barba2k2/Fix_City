@@ -8,16 +8,13 @@ import '../Models/user_model.dart';
 class ProfileController extends GetxController {
   static ProfileController get instance => Get.find();
 
-  /// Repositories
   final _authRepo = AuthenticationRepository.instance;
   final _userRepo = UserRepository.instance;
 
   getUserData() async {
     try {
-      // Obtém o email do usuário atual
       final currentUserEmail = _authRepo.getUserEmail;
       if (currentUserEmail.isNotEmpty) {
-        // Retorna detalhes do usuário se o email não estiver vazio
         return await _userRepo.getUserDetails(currentUserEmail);
       } else {
         Helper.warningSnackBar(
@@ -36,10 +33,8 @@ class ProfileController extends GetxController {
 
   Future<String?> getUserName() async {
     try {
-      // Obtém o nome do usuário atual
       final currentUserName = _authRepo.getDisplayName;
       if (currentUserName.isNotEmpty) {
-        // Retorna o nome completo do usuário se o nome de usuário não estiver vazio
         final user = await _userRepo.getUserNameDetails(currentUserName);
         return user.fullName;
       } else {
@@ -57,7 +52,6 @@ class ProfileController extends GetxController {
 
   updateRecord(UserModel user) async {
     try {
-      // Atualiza o registro do usuário no repositório
       await _userRepo.updateUserRecord(user);
       Helper.successSnackBar(
         title: tCongratulations,
@@ -73,10 +67,8 @@ class ProfileController extends GetxController {
 
   Future<void> deleteUser() async {
     try {
-      // Obtém o ID do usuário atual
       String uID = _authRepo.getUserID;
       if (uID.isNotEmpty) {
-        // Deleta o usuário se o ID não estiver vazio
         await _userRepo.deleteUser(uID);
         Helper.successSnackBar(
             title: tCongratulations, message: 'Conta exluida com sucesso!');

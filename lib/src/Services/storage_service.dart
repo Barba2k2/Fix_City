@@ -10,7 +10,7 @@ class StorageService {
 
     try {
       await firebaseStorage.ref('files/$fileName').putFile(file);
-      // Obter o URL após o upload
+
       final url = await firebaseStorage.ref('files/$fileName').getDownloadURL();
       log('Uploaded!');
       return url;

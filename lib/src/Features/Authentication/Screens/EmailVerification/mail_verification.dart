@@ -14,7 +14,6 @@ class MailVerification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Controlador associado para manipulação de eventos
     final controller = Get.put(MailVerificationController());
 
     return SafeArea(
@@ -25,30 +24,25 @@ class MailVerification extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Ícone de envelope
                 const Icon(LineAwesomeIcons.envelope_open, size: 100),
                 const Gap(60),
-                // Título da tela
                 Text(
                   verifyEmailTitle,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const Gap(30),
-                // Subtítulo 1
                 Text(
                   verifyEmailSubTitle1,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
                 const Gap(30),
-                // Subtítulo 2
                 Text(
                   verifyEmailSubTitle2,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
                 const Gap(20),
-                // Botão "Continuar", que verifica manualmente o status da verificação
                 SizedBox(
                   width: 200,
                   child: OutlinedButton(
@@ -71,7 +65,6 @@ class MailVerification extends StatelessWidget {
                   ),
                 ),
                 const Gap(60),
-                // Botão "Reenviar e-mail"
                 TextButton(
                   child: Text(
                     resendEmail,
@@ -81,7 +74,6 @@ class MailVerification extends StatelessWidget {
                     controller.sendVerificationEmail();
                   },
                 ),
-                // Botão "Voltar para o login"
                 TextButton(
                   onPressed: () {
                     Get.offAll(() => const WelcomeScreen());

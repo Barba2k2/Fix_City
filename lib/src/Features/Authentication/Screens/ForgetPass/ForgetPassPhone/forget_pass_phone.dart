@@ -13,12 +13,9 @@ import '../../../../../Repository/AuthenticationRepository/authentication_reposi
 import '../../Welcome/home_page.dart';
 import '../ForgetPassOtp/otp_screen.dart';
 
-/// [ForgetPasswordPhoneScreen] é uma tela que permite ao usuário
-/// redefinir sua senha usando autenticação via telefone.
 class ForgetPasswordPhoneScreen extends StatelessWidget {
   ForgetPasswordPhoneScreen({Key? key}) : super(key: key);
 
-  /// Formatação da máscara do telefone.
   final MaskTextInputFormatter phoneFormatter = MaskTextInputFormatter(
     mask: '+## (##) #####-####',
     filter: {"#": RegExp(r'[0-9]')},
@@ -28,7 +25,6 @@ class ForgetPasswordPhoneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Controlador para determinar se o tema escuro está ativo.
     final ThemeController themeController = Get.find();
     final isDark = themeController.isDarkMode.value;
 
@@ -54,7 +50,6 @@ class ForgetPasswordPhoneScreen extends StatelessWidget {
             child: Column(
               children: [
                 const Gap(80),
-                // Cabeçalho da tela.
                 FormHeaderWidget(
                   image: tForgetPasswordImage,
                   imageColor: isDark ? tPrimaryColor : tSecondaryColor,
@@ -68,7 +63,6 @@ class ForgetPasswordPhoneScreen extends StatelessWidget {
                 Form(
                   child: Column(
                     children: [
-                      // Campo de entrada para o número de telefone.
                       TextFormField(
                         controller: phoneNo,
                         decoration: const InputDecoration(
@@ -83,12 +77,10 @@ class ForgetPasswordPhoneScreen extends StatelessWidget {
                         keyboardType: TextInputType.phone,
                       ),
                       const Gap(20.0),
-                      // Botão para avançar para a próxima tela.
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            // Chama função de autenticação por telefone.
                             controller.phoneAuthentication(
                               phoneNo.text.trim(),
                             );

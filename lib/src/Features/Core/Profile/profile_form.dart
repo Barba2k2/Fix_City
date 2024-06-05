@@ -77,8 +77,6 @@ class ProfileFormScreen extends StatelessWidget {
             ),
           ),
           const Gap(30),
-
-          /// -- Form Submit Button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -98,8 +96,6 @@ class ProfileFormScreen extends StatelessWidget {
             ),
           ),
           const Gap(30),
-
-          /// -- Created Date and Delete Button
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -6,15 +6,15 @@ import 'package:location/location.dart' as loc;
 import '../../../../../Utils/Widgets/input_text_field.dart';
 
 class InputAddress extends StatelessWidget {
-  const InputAddress(
-      {super.key,
-      required this.address,
-      required this.addressNumber,
-      required this.cep,
-      required this.referPoint,
-      required this.latitudeReport,
-      required this.longitudeReport,
-      });
+  const InputAddress({
+    super.key,
+    required this.address,
+    required this.addressNumber,
+    required this.cep,
+    required this.referPoint,
+    required this.latitudeReport,
+    required this.longitudeReport,
+  });
 
   final TextEditingController address;
   final TextEditingController addressNumber;
@@ -23,42 +23,33 @@ class InputAddress extends StatelessWidget {
   final TextEditingController latitudeReport;
   final TextEditingController longitudeReport;
 
-  // Método para obter a localização atual do usuário.
   Future<loc.LocationData?> getCurrentLocation() async {
-    // Inicializa o objeto de localização (com alias 'loc').
     loc.Location location = loc.Location();
 
     bool serviceEnabled;
     loc.PermissionStatus permissionGranted;
 
-    // Verifica se o serviço de localização está ativado.
     serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
-      // Solicita ao usuário que ative o serviço de localização.
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
         return null;
       }
     }
 
-    // Verifica as permissões para acessar a localização.
     permissionGranted = await location.hasPermission();
     if (permissionGranted == loc.PermissionStatus.denied) {
-      // Solicita ao usuário permissão para acessar a localização.
       permissionGranted = await location.requestPermission();
       if (permissionGranted != loc.PermissionStatus.granted) {
         return null;
       }
     }
 
-    // Obtém a localização atual.
     return await location.getLocation();
   }
 
-  // Método para obter o endereço completo com base na latitude e longitude fornecidas.
   Future<Placemark> getAddress(double latitude, double longitude) async {
     try {
-      // Busca os detalhes do endereço a partir das coordenadas.
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
@@ -66,14 +57,11 @@ class InputAddress extends StatelessWidget {
       }
       throw "Endereço não disponível";
     } catch (e) {
-      // Em caso de erro, retorna a mensagem de erro.
       throw "Erro: ${e.toString()}";
     }
   }
 
-  // Método para preencher automaticamente o endereço com base na localização atual.
   Future<void> fillAddress() async {
-    // Obtém a localização atual.
     loc.LocationData? locationData = await getCurrentLocation();
     if (locationData != null) {
       double? latitude = locationData.latitude;
@@ -94,7 +82,6 @@ class InputAddress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // ---------------------------------------------- ENDEREÇO
         const Gap(15),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,7 +110,6 @@ class InputAddress extends StatelessWidget {
             return null;
           },
         ),
-        // ---------------------------------------------- NÚMERO
         const Gap(15),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +130,6 @@ class InputAddress extends StatelessWidget {
             return null;
           },
         ),
-        // ---------------------------------------------- CEP
         const Gap(15),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +150,6 @@ class InputAddress extends StatelessWidget {
             return null;
           },
         ),
-        // ---------------------------------------------- Ponto de referência
         const Gap(15),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,

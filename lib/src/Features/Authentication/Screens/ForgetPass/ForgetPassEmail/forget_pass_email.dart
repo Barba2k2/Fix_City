@@ -19,11 +19,11 @@ class ForgetPasswordMailScreen extends StatefulWidget {
   const ForgetPasswordMailScreen({Key? key}) : super(key: key);
 
   @override
-  State<ForgetPasswordMailScreen> createState() => _ForgetPasswordMailScreenState();
+  State<ForgetPasswordMailScreen> createState() =>
+      _ForgetPasswordMailScreenState();
 }
 
 class _ForgetPasswordMailScreenState extends State<ForgetPasswordMailScreen> {
-  // Controlador para o campo de email
   final emailController = TextEditingController();
 
   @override
@@ -48,7 +48,6 @@ class _ForgetPasswordMailScreenState extends State<ForgetPasswordMailScreen> {
             child: Column(
               children: [
                 const Gap(80),
-                // Cabeçalho da forma
                 FormHeaderWidget(
                   image: tForgetPasswordImage,
                   imageColor: isDark ? tPrimaryColor : tSecondaryColor,
@@ -59,7 +58,6 @@ class _ForgetPasswordMailScreenState extends State<ForgetPasswordMailScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const Gap(30),
-                // Formulário para inserção do e-mail
                 Form(
                   key: controller.resetPassEmailFormKey,
                   child: Column(
@@ -74,7 +72,6 @@ class _ForgetPasswordMailScreenState extends State<ForgetPasswordMailScreen> {
                         ),
                       ),
                       const Gap(20),
-                      // Botão de envio
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -96,19 +93,24 @@ class _ForgetPasswordMailScreenState extends State<ForgetPasswordMailScreen> {
     );
   }
 
-  // Método separado dos controllers por não funcionar externamente
-
-  // Método para enviar o e-mail de redefinição de senha
   void sendResetPasswordEmail() async {
     try {
       final email = emailController.text;
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       log('E-mail enviado para: $email');
-      await Get.to(() => const MailSend());
+      await Get.to(
+        () => const MailSend(),
+      );
     } on FirebaseAuthException catch (e) {
-      Helper.errorSnackBar(title: tOps, message: e.message);
+      Helper.errorSnackBar(
+        title: tOps,
+        message: e.message,
+      );
     } catch (e) {
-      Helper.errorSnackBar(title: tOps, message: e.toString());
+      Helper.errorSnackBar(
+        title: tOps,
+        message: e.toString(),
+      );
     }
   }
 }

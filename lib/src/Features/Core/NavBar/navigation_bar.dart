@@ -24,7 +24,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     GetPage(name: '/maps', page: () => const MapScreen()),
     GetPage(name: '/category', page: () => const CategoryScreen()),
     GetPage(name: '/user/Settings', page: () => const ProfileScreen()),
-
   ];
 
   final controller = Get.put(NavBarController());
@@ -41,9 +40,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
         final List<GetPage> filteredPages = _pages.where((page) {
           if (page.name == "/category" && !isAdmin) {
-            return false; // Remover a página de categoria se o usuário nao for admin
+            return false;
           }
-          return true; // Manter todas as outras páginas
+          return true;
         }).toList();
 
         return StreamBuilder<bool>(

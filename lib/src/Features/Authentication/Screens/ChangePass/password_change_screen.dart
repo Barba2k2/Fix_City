@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../../../Constants/colors.dart';
 import '../../../../Constants/text_strings.dart';
@@ -50,8 +49,6 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             const Gap(30),
-            // Obx é usado para observar as mudanças do estado e reconstruir o widget quando
-            // o valor observado (showPassword) muda.
             Obx(
               () => TextFormField(
                 controller: passwordController,
@@ -64,13 +61,10 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
                   prefixIcon: const Icon(Icons.fingerprint_rounded),
                   labelText: tPassword,
                   hintText: tPassword,
-
-                  // Botão para alternar a visibilidade da senha.
-                  // A visibilidade da senha é controlada pelo valor de 'showPassword' no controlador.
                   suffixIcon: IconButton(
                     icon: controller.showPasswod.value
-                        ? const Icon(LineAwesomeIcons.eye)
-                        : const Icon(LineAwesomeIcons.eye_slash),
+                        ? const Icon(Icons.lock_open_rounded)
+                        : const Icon(Icons.lock_outline_rounded),
                     onPressed: () => controller.showPasswod.value =
                         !controller.showPasswod.value,
                   ),
@@ -88,13 +82,10 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
                   prefixIcon: const Icon(Icons.fingerprint_rounded),
                   labelText: 'Confrimar Senha',
                   hintText: 'Confirmar Senha',
-
-                  // Botão para alternar a visibilidade da senha.
-                  // A visibilidade da senha é controlada pelo valor de 'showPassword' no controlador.
                   suffixIcon: IconButton(
                     icon: controller.showPasswod.value
-                        ? const Icon(LineAwesomeIcons.eye)
-                        : const Icon(LineAwesomeIcons.eye_slash),
+                        ? const Icon(Icons.lock_open_rounded)
+                        : const Icon(Icons.lock_outline_rounded),
                     onPressed: () => controller.showPasswod.value =
                         !controller.showPasswod.value,
                   ),

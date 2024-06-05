@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -27,9 +25,7 @@ class ProfileScreen extends StatelessWidget {
     final UserController userController = Get.find();
     final ThemeController themeController = Get.find();
 
-    /// Método para exibir um diálogo perguntando ao usuário se ele deseja sair do aplicativo.
     Future<bool> showExitDialog(BuildContext context) async {
-      // Usando Completer para obter o resultado final
       final completer = Completer<bool>();
 
       showDialog(
@@ -42,7 +38,6 @@ class ProfileScreen extends StatelessWidget {
               width: 100,
               child: OutlinedButton(
                 onPressed: () {
-                  // Indica que o usuário não quer sair
                   Navigator.of(ctx).pop();
                   completer.complete(false);
                 },
@@ -52,7 +47,6 @@ class ProfileScreen extends StatelessWidget {
             MyPrimaryButton(
               isFullWidth: false,
               onPressed: () {
-                // Indica que o usuário quer sair
                 Navigator.of(ctx).pop();
                 completer.complete(true);
               },
@@ -69,20 +63,15 @@ class ProfileScreen extends StatelessWidget {
       () {
         final isDark = themeController.isDarkMode.value;
 
-        
         return WillPopScope(
           onWillPop: () async {
             bool shouldExit = await showExitDialog(context);
             shouldExit ? SystemNavigator.pop() : null;
-            // Previne a ação padrão do botão de voltar
+
             return false;
           },
           child: Scaffold(
             appBar: AppBar(
-              // leading: IconButton(
-              //   onPressed: () => Get.back(),
-              //   icon: const Icon(LineAwesomeIcons.angle_left),
-              // ),
               automaticallyImplyLeading: false,
               title: Text(
                 profile,
@@ -103,7 +92,6 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    /// -- IMAGE with ICON
                     const ImageWithIcon(),
                     const Gap(10),
                     StreamBuilder<UserModel?>(
@@ -125,32 +113,17 @@ class ProfileScreen extends StatelessWidget {
                       },
                     ),
                     const Gap(20),
-
-                    /// -- BUTTON
                     MyPrimaryButton(
                       isFullWidth: false,
                       width: 200,
                       text: editProfile,
                       onPressed: () {
-                        //* Proxima Feature
                         Get.to(() => UpdateProfileScreen());
                       },
                     ),
                     const Gap(30),
                     const Divider(),
                     const Gap(10),
-
-                    /// -- MENU
-                    // ProfileMenuWidget(
-                    //   title: "Configurações",
-                    //   icon: LineAwesomeIcons.cog,
-                    //   onPress: () {},
-                    // ),
-                    // ProfileMenuWidget(
-                    //   title: "Informações",
-                    //   icon: LineAwesomeIcons.info,
-                    //   onPress: () {},
-                    // ),
                     ProfileMenuWidget(
                       title: "Sair",
                       icon: LineAwesomeIcons.alternate_sign_out,

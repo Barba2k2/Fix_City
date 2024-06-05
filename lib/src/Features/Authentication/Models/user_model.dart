@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  // Variáveis do modelo
   final String? id;
   final String? password;
   final String fullName;
@@ -10,7 +9,6 @@ class UserModel {
   final String? cpf;
   final bool isAdmin;
 
-  /// Construtor para criar uma instância de UserModel.
   const UserModel({
     this.id,
     this.password,
@@ -21,7 +19,6 @@ class UserModel {
     this.isAdmin = false,
   });
 
-  /// Converte o modelo para um mapa (formato Json) para armazenar no Firebase.
   Map<String, dynamic> toJson() {
     return {
       "id": id,
@@ -33,7 +30,6 @@ class UserModel {
     };
   }
 
-  /// Retorna uma instância vazia de UserModel.
   static UserModel empty() => const UserModel(
         id: '',
         email: '',
@@ -43,18 +39,15 @@ class UserModel {
         isAdmin: false,
       );
 
-  /// Cria uma instância de UserModel mapeando os dados do snapshot do Firebase.
   factory UserModel.fromSnapshot(
     DocumentSnapshot<Map<String, dynamic>> document,
   ) {
     final data = document.data();
-    
-    // Verifica se os dados estão vazios e retorna um modelo vazio, se necessário.
+
     if (data == null || data.isEmpty) {
       return UserModel.empty();
     }
 
-    // Verifica se a chave 'Admin' está presente e é do tipo bool.
     final adminValue = data['Admin'];
     final bool isAdmin = adminValue is bool ? adminValue : false;
 

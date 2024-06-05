@@ -6,22 +6,36 @@ class StepWidget extends StatelessWidget {
   final dynamic data;
   final String obs;
 
-  const StepWidget(
-      {super.key,
-      required this.status,
-      required this.data,
-      required this.obs});
+  const StepWidget({
+    super.key,
+    required this.status,
+    required this.data,
+    required this.obs,
+  });
 
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> statusList = {
-      "Enviado": const Icon(Icons.double_arrow_rounded,
-          color: Colors.blue, size: 35.8),
-      "Em andamento": const Icon(Icons.rocket_launch,
-          color: Colors.orangeAccent, size: 35.8),
-      "Encerrado": const Icon(Icons.task_alt, color: Colors.green, size: 35.8),
-      "Cancelado": const Icon(Icons.cancel_presentation_rounded,
-          color: Colors.red, size: 35.8),
+      "Enviado": const Icon(
+        Icons.double_arrow_rounded,
+        color: Colors.blue,
+        size: 36,
+      ),
+      "Em andamento": const Icon(
+        Icons.rocket_launch,
+        color: Colors.orangeAccent,
+        size: 36,
+      ),
+      "Encerrado": const Icon(
+        Icons.task_alt,
+        color: Colors.green,
+        size: 36,
+      ),
+      "Cancelado": const Icon(
+        Icons.cancel_presentation_rounded,
+        color: Colors.red,
+        size: 36,
+      ),
     };
 
     return Container(

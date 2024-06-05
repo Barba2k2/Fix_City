@@ -47,7 +47,6 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> loadMarkers() async {
-    // Substitua "chamados" pelo nome da sua coleção no Firestore
     QuerySnapshot<Map<String, dynamic>> snapshot =
         await FirebaseFirestore.instance.collection('Chamados').get();
 

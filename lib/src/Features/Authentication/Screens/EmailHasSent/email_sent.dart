@@ -21,30 +21,28 @@ class MailSend extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Ícone do envelope
-                const Icon(LineAwesomeIcons.envelope_open, size: 100),
+                const Icon(
+                  LineAwesomeIcons.envelope_open,
+                  size: 100,
+                ),
                 const Gap(60),
-                // Título da tela
                 Text(
                   verifyEmailTitle,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const Gap(30),
-                // Subtítulo 1
                 Text(
                   passwordResetEmailSubTitle1,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
                 const Gap(30),
-                // Subtítulo 2
                 Text(
                   passwordResetEmailSubTitle2,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
                 const Gap(20),
-                // Botão "Continuar"
                 SizedBox(
                   width: 200,
                   child: OutlinedButton(
@@ -55,7 +53,9 @@ class MailSend extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Get.offAll(() => const WelcomeScreen());
+                      Get.offAll(
+                        () => const WelcomeScreen(),
+                      );
                     },
                     child: Text(
                       continueButton.toUpperCase(),
@@ -67,7 +67,6 @@ class MailSend extends StatelessWidget {
                   ),
                 ),
                 const Gap(60),
-                // Botão "Reenviar e-mail"
                 TextButton(
                   child: Text(
                     resendEmail,
@@ -77,16 +76,17 @@ class MailSend extends StatelessWidget {
                     Get.back();
                   },
                 ),
-                // Botão "Voltar para o login"
                 TextButton(
                   onPressed: () {
-                    Get.offAll(() => const WelcomeScreen());
+                    Get.offAll(
+                      () => const WelcomeScreen(),
+                    );
                     AuthenticationRepository.instance.logout();
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(LineAwesomeIcons.alternate_long_arrow_left),
+                      const Icon(Icons.arrow_back_ios_rounded),
                       const Gap(5),
                       Text(
                         backToLogin,

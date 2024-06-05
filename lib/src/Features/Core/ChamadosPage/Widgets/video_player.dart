@@ -27,7 +27,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
     _controller = VideoPlayerController.network(widget.videoUrl)
       ..initialize().then((_) {
-        // Chama o setState para que a interface seja atualizada
         setState(() {});
       });
   }

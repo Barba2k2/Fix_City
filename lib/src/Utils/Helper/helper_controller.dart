@@ -8,26 +8,20 @@ import '../../Constants/text_strings.dart';
 class Helper extends GetxController {
   //* ========= VALIDAÇÕES ========= *//
 
-  /// Valida o formato do e-mail.
   static String? validateEmail(value) {
-    // Verifica se o e-mail é vazio.
     if (value == null || value.isEmpty) return tEmailCannotEmpty;
-    // Verifica se é um e-mail válido.
+
     if (!GetUtils.isEmail(value)) return tInvalidEmailFormat;
     return null;
   }
 
-  /// Valida a força da senha.
   static String? validatePassword(value) {
-    // Verifica se a senha é vazia.
     if (value == null || value.isEmpty) return 'Campo Senha não pode ser vazio';
 
-    // Define o padrão para a senha.
     String pattern =
         r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
     RegExp regex = RegExp(pattern);
 
-    // Verifica se a senha atende ao padrão.
     if (!regex.hasMatch(value)) {
       return 'A senha deve ter 8 caracteres, com uma letra maiúscula,\num número e um símbolo.';
     }
@@ -36,9 +30,7 @@ class Helper extends GetxController {
 
   //* =========== SNACK-BARS =========== *//
 
-  /// Exibe uma snack-bar de sucesso.
   static successSnackBar({required title, message}) {
-    // Configuração da snack-bar.
     Get.snackbar(
       title,
       message,
@@ -56,9 +48,7 @@ class Helper extends GetxController {
     );
   }
 
-  /// Exibe uma snack-bar de aviso.
   static warningSnackBar({required title, message}) {
-    // Configuração da snack-bar.
     Get.snackbar(
       title,
       message,
@@ -76,9 +66,7 @@ class Helper extends GetxController {
     );
   }
 
-  /// Exibe uma snack-bar de erro.
   static errorSnackBar({required title, message}) {
-    // Configuração da snack-bar.
     Get.snackbar(
       title,
       message,
@@ -96,9 +84,7 @@ class Helper extends GetxController {
     );
   }
 
-  /// Exibe uma snack-bar moderna.
   static modernSnackBar({required title, message}) {
-    // Configuração da snack-bar.
     Get.snackbar(
       title,
       message,

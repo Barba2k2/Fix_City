@@ -9,10 +9,7 @@ import '../../../../../Constants/text_strings.dart';
 import '../../../../../Controller/theme_controller.dart';
 import '../../../Controllers/otp_controller.dart';
 
-/// [OTPScreen] é uma tela que permite ao usuário inserir
-/// e verificar um OTP (One-Time Password) recebido.
 class OTPScreen extends StatelessWidget {
-  // Construtor do widget
   const OTPScreen({super.key});
 
   @override
@@ -40,7 +37,6 @@ class OTPScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Título da tela
               Text(
                 tOtpTitle,
                 style: GoogleFonts.montserrat(
@@ -48,13 +44,11 @@ class OTPScreen extends StatelessWidget {
                   fontSize: 80.0,
                 ),
               ),
-              // Subtítulo da tela
               Text(
                 tOtpSubTitle.toUpperCase(),
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const Gap(40),
-              // Mensagem informando o usuário sobre o OTP
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
@@ -64,25 +58,21 @@ class OTPScreen extends StatelessWidget {
                 ),
               ),
               const Gap(20),
-              // Campo para inserção do OTP
               OtpTextField(
                 mainAxisAlignment: MainAxisAlignment.center,
                 numberOfFields: 6,
                 fillColor: Colors.black.withOpacity(0.1),
                 filled: true,
                 onSubmit: (code) {
-                  // Função chamada quando o usuário preenche todos os campos do OTP
                   otp = code;
                   OTPController.instance.verifyOTP(otp);
                 },
               ),
               const Gap(20),
-              // Botão para continuar após a inserção do OTP
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Função para verificar o OTP inserido pelo usuário
                     OTPController.instance.verifyOTP(otp);
                   },
                   child: const Text(tNext),

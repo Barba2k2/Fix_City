@@ -12,13 +12,11 @@ import '../Screens/ForgetPass/ForgetPassOtp/otp_screen.dart';
 class LoginController extends GetxController {
   static LoginController get instance => Get.find();
 
-  // Observáveis usados para controlar a visibilidade da senha e ações de carregamento
   final showPasswod = false.obs;
   final isLoading = false.obs;
   final isGoogleLoading = false.obs;
   final isFacebookLoading = false.obs;
 
-  // Controladores de texto e chaves de formulário para interação com os campos de entrada e validação
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -26,12 +24,10 @@ class LoginController extends GetxController {
   final resetPassEmailFormKey = GlobalKey<FormState>();
   final resetPasswordEmailFormKey = GlobalKey<FormState>();
 
-  /// Realiza login usando email e senha
   Future<void> login() async {
     try {
       isLoading.value = true;
 
-      // Verifica a validade do formulário
       if (!loginFormKey.currentState!.validate()) {
         isLoading.value = false;
         return;
@@ -39,13 +35,11 @@ class LoginController extends GetxController {
 
       final auth = AuthenticationRepository.instance;
 
-      // Realiza login usando email e senha
       final loginResult = await auth.loginWithEmailAndPassword(
         emailController.text.trim(),
         passwordController.text.trim(),
       );
 
-      // Se o login não for bem-sucedido, mostra uma snackbar de erro
       if (!loginResult.success) {
         Helper.errorSnackBar(
           title: tOps,
@@ -55,7 +49,6 @@ class LoginController extends GetxController {
         return;
       }
 
-      // Define a tela inicial após o login bem-sucedido
       auth.setInitialScreen(auth.firebaseUser);
     } catch (e) {
       isLoading.value = false;
@@ -63,17 +56,14 @@ class LoginController extends GetxController {
     }
   }
 
-  /// Realiza login usando Google
   Future<void> googleSignIn() async {
     try {
       isGoogleLoading.value = true;
       final auth = AuthenticationRepository.instance;
 
-      // Realiza login usando o Google
       await auth.signInWithGoogle();
       isGoogleLoading.value = false;
 
-      // Verifica se o usuário já existe no repositório, caso contrário, cria um novo usuário
       if (!await UserRepository.instance.recordExist(auth.getUserEmail)) {
         UserModel user = UserModel(
           id: auth.getUserID,
@@ -91,16 +81,13 @@ class LoginController extends GetxController {
     }
   }
 
-  /// Realiza login usando Facebook
   Future<void> facebookSignIn() async {
     try {
       isFacebookLoading.value = true;
       final auth = AuthenticationRepository.instance;
 
-      // Realiza login usando o Facebook
       await auth.signInWithFacebook();
 
-      // Verifica se o usuário já existe no repositório, caso contrário, cria um novo usuário
       if (!await UserRepository.instance.recordExist(auth.getUserID)) {
         UserModel user = UserModel(
           id: auth.getUserID,
@@ -118,17 +105,14 @@ class LoginController extends GetxController {
     }
   }
 
-  /// Envia um email de redefinição de senha
   Future<void> resetPasswordEmail() async {
     try {
-      // Verifica a validade do formulário de redefinição de senha
       if (resetPassEmailFormKey.currentState!.validate()) {
         isLoading.value = false;
         return;
       }
       isLoading.value = true;
 
-      // Solicita um email de redefinição de senha
       await AuthenticationRepository.instance.resetPasswordEmail(
         emailController.text.trim(),
       );

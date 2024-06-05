@@ -10,14 +10,11 @@ import '../../../../../Utils/Helper/helper_controller.dart';
 import '../../../Controllers/login_controller.dart';
 import '../../ForgetPass/ForgetPassOptions/foregt_pass_modal_bottom_sheet.dart';
 
-/// [LoginFormWidget] é um widget que contém os campos e botões
-/// necessários para realizar o login do usuário.
 class LoginFormWidget extends StatelessWidget {
   const LoginFormWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Controlador para as funções de login e estados associados.
     final controller = Get.put(LoginController());
 
     return Container(
@@ -27,7 +24,6 @@ class LoginFormWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //* Campo E-mail
             TextFormField(
               validator: Helper.validateEmail,
               controller: controller.emailController,
@@ -39,11 +35,6 @@ class LoginFormWidget extends StatelessWidget {
               ),
             ),
             const Gap(10),
-
-            //* Campo Senha com opção de mostrar/esconder a senha.
-
-            // Obx é usado para observar as mudanças do estado e reconstruir o widget quando
-            // o valor observado (showPassword) muda.
             Obx(
               () => TextFormField(
                 controller: controller.passwordController,
@@ -56,13 +47,10 @@ class LoginFormWidget extends StatelessWidget {
                   prefixIcon: const Icon(Icons.fingerprint_rounded),
                   labelText: tPassword,
                   hintText: tPassword,
-
-                  // Botão para alternar a visibilidade da senha.
-                  // A visibilidade da senha é controlada pelo valor de 'showPassword' no controlador.
                   suffixIcon: IconButton(
                     icon: controller.showPasswod.value
-                        ? const Icon(LineAwesomeIcons.eye)
-                        : const Icon(LineAwesomeIcons.eye_slash),
+                        ? const Icon(Icons.lock_open_rounded)
+                        : const Icon(Icons.lock_outline_rounded),
                     onPressed: () => controller.showPasswod.value =
                         !controller.showPasswod.value,
                   ),
@@ -70,12 +58,8 @@ class LoginFormWidget extends StatelessWidget {
               ),
             ),
             const Gap(10),
-
-            // ...
-
             Align(
               alignment: Alignment.centerRight,
-              // Botão que abre o modal de "esqueci minha senha".
               child: TextButton(
                 onPressed: () =>
                     ForgetPasswordScreen.buildShowModalBottomSheet(context),
@@ -88,21 +72,11 @@ class LoginFormWidget extends StatelessWidget {
                 ),
               ),
             ),
-
-// ...
-
-            /// Botão de login.
-
-            // Obx é usado para observar a mudança de estado e reconstruir o widget quando
-            // os valores observados (isLoading, isFacebookLoading, isGoogleLoading) mudam.
             Obx(
               () => MyPrimaryButton(
                 isLoading: controller.isLoading.value ? true : false,
                 text: tLogin,
-
-                // O botão ficará desabilitado se qualquer um dos processos de carregamento estiver ativo.
-                onPressed: controller.isFacebookLoading.value ||
-                        controller.isGoogleLoading.value
+                onPressed: controller.isGoogleLoading.value
                     ? () {}
                     : controller.isLoading.value
                         ? () {}

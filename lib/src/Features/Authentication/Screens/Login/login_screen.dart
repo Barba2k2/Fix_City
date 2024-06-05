@@ -17,12 +17,16 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // AppBar com botão de retorno para a tela de boas-vindas
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, size: 30.0),
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 30.0,
+            ),
             onPressed: () {
-              Get.offAll(() => const WelcomeScreen());
+              Get.offAll(
+                () => const WelcomeScreen(),
+              );
             },
           ),
         ),
@@ -32,21 +36,19 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Cabeçalho do formulário de login
                 const FormHeaderWidget(
                   image: homeImage,
                   title: tLoginTitle,
                   subTitle: tLoginSubTitle,
                 ),
-                // Widget do formulário de login
                 const LoginFormWidget(),
-                // Divisor gráfico entre formulário de login e rodapé
                 const MyFormDividerWidget(),
-                // Rodapé com opção de registro
                 SocialFooter(
                   text1: tDontHaveAnAccount,
                   text2: tSignup,
-                  onPressed: () => Get.off(() => const SignupScreen()),
+                  onPressed: () => Get.off(
+                    () => const SignupScreen(),
+                  ),
                 ),
               ],
             ),

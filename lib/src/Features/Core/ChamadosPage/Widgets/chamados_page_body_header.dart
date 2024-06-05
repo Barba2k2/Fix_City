@@ -21,7 +21,6 @@ class ChamadosPageBodyHeader extends StatelessWidget {
         final user = snapshot.data;
         bool isAdmin = user?.isAdmin ?? false;
 
-        // Construir a linha do cabeçalho com base no status de admin do usuário
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
